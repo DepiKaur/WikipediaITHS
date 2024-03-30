@@ -41,8 +41,6 @@ public class MenuService {
                     default -> log.error("wrong input");
                 }
             }
-
-
             if (currentUser.get().getType().getName().equals("Admin")) {
                 adminMenu();
             } else if (currentUser.get().getType().getName().equals("developer")) {
@@ -50,7 +48,6 @@ public class MenuService {
             } else {
                 userMenu();
             }
-
         }
     }
 
@@ -84,7 +81,7 @@ public class MenuService {
         log.menu("""
                 ----------------------------------------------------------------------------------------
                                
-                Welcome to the user view!                
+                Welcome to the User view!                
                 """);
         while (currentUser.isPresent()) {
             UserMenu userChoice = getUserChoice(UserMenu.values());
@@ -102,26 +99,20 @@ public class MenuService {
                 case SHOW_RESERVATIONS_IN_QUEUE -> articleService.showArticlesReservedInQueue(currentUser.get());
                 case RETURN_RESERVED -> articleService.returnReservedHardCopyOfAnArticle(currentUser.get());
             }
-
         }
-
     }
-
-
 
     public void developerMenu(){
         log.menu("""
                 ----------------------------------------------------------------------------------------
                                 
-                Welcome to the developer view!                
+                Welcome to the Developer view!                
                 """);
         boolean logout = false;
         while (!logout){
             DeveloperMenu userChoice = getUserChoice(DeveloperMenu.values());
             switch (userChoice){
                 case LOGOUT -> logout= true;
-//                case ERROR_LOG -> printErrors();
-//                case ERROR_HANDLE -> handleErrors();
             }
         }
 
@@ -142,9 +133,7 @@ public class MenuService {
                 case AUTHOR -> articleService.searchArticleByPerson(currentUser.get());
             }
         }
-
     }
-
 
     public void editArticleMenu(Article article){
         boolean exit = false;
@@ -167,10 +156,9 @@ public class MenuService {
     public <T extends MenuOption> T getUserChoice(T[] options) {
         log.menu("Choose from the following tasks- \n");
         printChoices(options);
-        log.message("\nEnter your choice:");
+        log.message("\nEnter your choice: ");
         int userChoice = ScannerHelper.getIntInput(options.length);
         return options[userChoice - 1];
-
     }
 
     private <T extends MenuOption> void printChoices(T[] options) {
@@ -183,15 +171,14 @@ public class MenuService {
 
     private void login() {
         Optional<Person> opPerson = Optional.empty();
-        if(currentUser.isEmpty()) opPerson = pService.login();
-        else {
+        if(currentUser.isEmpty()) {
+            opPerson = pService.login();
+        } else {
             log.error("You are already in-logged");
             return;
         }
         if (opPerson.isPresent()) {
             currentUser = opPerson;
         }
-
     }
 }
-

@@ -1,14 +1,24 @@
 package com.example.wikipediagang.service;
 
 import com.example.wikipediagang.ScannerHelper;
-import com.example.wikipediagang.model.*;
-import com.example.wikipediagang.repo.*;
-import org.hibernate.internal.util.collections.ConcurrentReferenceHashMap;
+import com.example.wikipediagang.model.Article;
+import com.example.wikipediagang.model.ArticleBorrowerInfo;
+import com.example.wikipediagang.model.Comment;
+import com.example.wikipediagang.model.ErrorLog;
+import com.example.wikipediagang.model.LoginInformation;
+import com.example.wikipediagang.model.Person;
+import com.example.wikipediagang.model.UserType;
+import com.example.wikipediagang.repo.ArticleBorrowerInfoRepo;
+import com.example.wikipediagang.repo.ArticleRepo;
+import com.example.wikipediagang.repo.CommentRepo;
+import com.example.wikipediagang.repo.ErrorLogRepo;
+import com.example.wikipediagang.repo.LoginInformationRepo;
+import com.example.wikipediagang.repo.PersonRepository;
+import com.example.wikipediagang.repo.UserTypeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.Console;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.Scanner;
@@ -48,16 +58,13 @@ public class PersonService {
         List<LoginInformation> loginInfo;
         Console console = System.console();
 
-
         while (true) {
 
-            log.message("\nWrite in your login :");
+            log.message("\nEnter username: ");
             login = input.nextLine().trim();
-            input.nextLine();
-            log.message("Write in your password:");
+            log.message("Enter password: ");
             if(console == null) {
                 password = input.nextLine().trim();
-                input.nextLine();
             }else {
                 password = String.valueOf(console.readPassword());
             }
@@ -69,27 +76,25 @@ public class PersonService {
                 if (user.isPresent()) {
                     String defaultUserEmail = "default@mail.com";
                     if(user.get().getEmail().equals(defaultUserEmail)){
-                        log.error("You try loggin as default user. It is not allowed");
+                        log.error("Login as default user: NOT allowed");
                         if (!log.tryAgain()) return Optional.empty();
                         continue;
                     }
-                    log.success("Login is success ");
+                    log.success("Login: Successful ");
                     log.success("Welcome, " + user.get().getFirstName() + " " + user.get().getLastName());
                     System.out.flush();
                     return user;
                 } else {
-                    log.error("Login is failed ");
-                    log.error("Wrong login or password ");
+                    log.error("Invalid username or password ");
                     if (!log.tryAgain()) return Optional.empty();
                 }
             }else {
-                log.error("There is no such user. Control login and password");
+                log.error("Username NOT registered!");
                 if(!log.tryAgain()) return Optional.empty();
                 System.out.flush();
             }
         }
     }
-
 
     /**
      * Function creating a new currentUser adn dave him to database.
@@ -107,7 +112,6 @@ public class PersonService {
         Optional<UserType> type;
         Person newUser;
         LoginInformation loginInfo;
-
 
         //System.out.println(currentUser.get().getType().getName());
         if (currentUser.isPresent() && currentUser.get().getType().getName().equals("Admin")) {
@@ -184,8 +188,6 @@ public class PersonService {
             return Optional.empty();
         }
 
-
-
         while (true) {
             String email = inputEmail("Write in user's email , that you want to delete");
             if (email.isEmpty()) return Optional.empty();
@@ -196,7 +198,6 @@ public class PersonService {
                 continue;
             }
             userToDelete = personRepo.findByEmail(email);
-
 
             if (userToDelete.isEmpty()) {
                 log.error("There is no user with such email");
@@ -232,8 +233,6 @@ public class PersonService {
             break;
         }
 
-
-
         comments = commentRepo.findCommentByPerson(userToDelete.get());
         if(!comments.isEmpty()){
             for (Comment comment: comments) {
@@ -264,7 +263,6 @@ public class PersonService {
         log.success("SUCCESS. Person is deleted ==>  " + userToDelete.get().getFirstName() +" " + userToDelete.get().getLastName() + " " + userToDelete.get().getEmail() + "\n");
         return userToDelete;
     }
-
 
     /**
      * Takes String for new first name of user.
@@ -312,7 +310,6 @@ public class PersonService {
         }
     }
 
-
     /**
      * Takes String for new email of user.
      * Validate it and return.
@@ -358,11 +355,6 @@ public class PersonService {
             }
         }
     }
-
-
-
-
-
 
     private  Optional<UserType> inputNewUserType(){
         String choise;
@@ -414,7 +406,6 @@ public class PersonService {
         }
     }
 
-
     public String inputNewPassword(){
         String password;
         boolean tryAgain;
@@ -439,8 +430,6 @@ public class PersonService {
             loginRepo.save(loginInfo);
             log.success("!! Password has been CHANGED successfully !!");
         }
-//        person.getLoginInfo().setPassword(newPassword);
-//        personRepo.save(person);
     }
 
     private void changeFirstName(Person person){
@@ -536,9 +525,8 @@ public class PersonService {
             return null;
         }
     }
-            public  List<Person> getAllUsers(){
+    public  List<Person> getAllUsers(){
         return personRepo.findAll();
     }
-
 }
 
