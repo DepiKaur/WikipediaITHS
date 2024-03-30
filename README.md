@@ -7,6 +7,7 @@ One must connect to the database before using this application. It can be done i
 
 Go to Project --> src --> main --> resources --> application.properties
 
+
 Enter username and password to connect with the database. This application can be used either in IntelliJ or 
 Command Terminal.
 ------------------------------------------------------------------------------------------------------------------------
