@@ -10,7 +10,6 @@ Go to Project --> src --> main --> resources --> application.properties
 Enter username and password to connect with the database. This application can be used either in IntelliJ or 
 Command Terminal.
 
-------------------------------------------------------------------------------------------------------------------------
 ## Instructions to run this application
 ITHPedia is a Java-application which keeps track of the Articles (written by users) in an organisation.
 It has an `Admin` with the following credentials.
